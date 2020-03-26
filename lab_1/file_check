@@ -1,23 +1,11 @@
 #!/bin/bash
 #clear
-
-
-#if [ -z `dpkg -l | grep ffmpeg` ]
-#then sudo apt install ffmpeg
-#fi
-
 IFS=$'\n'
-output=file_result.csv
-rm $output
-#touch $output
 
-echo name,type,size,rights,date,duration >> $output
+function func () {
 
 for line in `ls -l`
 do
-if [ -z `echo $line | awk '{print $3}'` ]
-then line=''
-fi
 
 rights=`echo $line | awk '{print $1}'`
 size=`echo $line | awk '{print $5}'`
@@ -39,13 +27,36 @@ type=`echo $name | awk -F '.' '{print $2}'`
 
 name=`echo $name | awk -F '.' '{print $1}'`
 
+if [ `echo $line | awk '{print $3}'` != "" ]
+then echo $name,$type,$size,$rights,$date,$duration 
+fi
 
+if [ `echo $rights` = "drwxr-xr-x" ]
+then 	cd $name/
+	#echo 1 #trace
+	func
+	#echo 2 #trace
+	#cd -
+	#echo 3 #trace
 
-echo $name,$type,$size,$rights,$date,$duration 
-done >> $output
+fi
+
+done
+}
+
+#______________________________________________________
+#if [ -z `dpkg -l | grep ffmpeg` ]
+#then sudo apt install ffmpeg
+#fi
+output=file_result.csv
+rm $output
+
+echo name,type,size,rights,date,duration >> $output
+
+func >> $output
 
 echo "done"
 
-cat file_result.csv
+#cat file_result.csv
 
 
