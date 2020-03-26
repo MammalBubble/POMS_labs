@@ -2,7 +2,7 @@
 #clear
 IFS=$'\n'
 
-func () {
+function func () {
 
 for line in `ls -l`
 do
@@ -33,15 +33,15 @@ fi
 
 if [ `echo $rights` = "drwxr-xr-x" ]
 then 	cd $name/
-	echo 1 #trace
-	func $1
-	echo 2 #trace
-	cd -
-	echo 3 #trace
+	#echo 1 #trace
+	func
+	#echo 2 #trace
+	#cd -
+	#echo 3 #trace
 
 fi
 
-done >> $1
+done
 }
 
 #______________________________________________________
@@ -53,10 +53,10 @@ rm $output
 
 echo name,type,size,rights,date,duration >> $output
 
-func $output
+func >> $output
 
 echo "done"
 
-cat file_result.csv
+#cat file_result.csv
 
 
