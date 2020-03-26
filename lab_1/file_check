@@ -1,0 +1,51 @@
+#!/bin/bash
+#clear
+
+
+#if [ -z `dpkg -l | grep ffmpeg` ]
+#then sudo apt install ffmpeg
+#fi
+
+IFS=$'\n'
+output=file_result.csv
+rm $output
+#touch $output
+
+echo name,type,size,rights,date,duration >> $output
+
+for line in `ls -l`
+do
+if [ -z `echo $line | awk '{print $3}'` ]
+then line=''
+fi
+
+rights=`echo $line | awk '{print $1}'`
+size=`echo $line | awk '{print $5}'`
+date=`echo $line | awk '{print $7 $6 $8}'`
+
+name=`echo $line | awk '{print $9}'`
+type=`echo $name | awk -F '.' '{print $2}'`
+
+#if [ "`expr index "$type" mp`" =  0 ]
+#then  
+#	for duration in `ffmpeg -i $name -hide_banner`
+#	do 
+#		if [ "`expr index "$duration" Duration`" != "0" ]
+#		then x=`expr index "$duration" Duration`
+#		duration=${duration: $x : 20}
+#		fi
+#	done
+#fi
+
+name=`echo $name | awk -F '.' '{print $1}'`
+
+
+
+echo $name,$type,$size,$rights,$date,$duration 
+done >> $output
+
+echo "done"
+
+cat file_result.csv
+
+
