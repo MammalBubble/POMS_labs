@@ -14,16 +14,11 @@ date=`echo $line | awk '{print $7 $6 $8}'`
 name=`echo $line | awk '{print $9}'`
 type=`echo $name | awk -F '.' '{print $2}'`
 
-#if [ "`expr index "$type" mp`" =  0 ]
-#then  
-#	for duration in `ffmpeg -i $name -hide_banner`
-#	do 
-#		if [ "`expr index "$duration" Duration`" != "0" ]
-#		then x=`expr index "$duration" Duration`
-#		duration=${duration: $x : 20}
-#		fi
-#	done
-#fi
+if [ "`expr index "$type" mp`" =  0 ]
+then 
+duration=`ffprobe videoplayback.mp4 2>&1 | awk -F'[:,]' '/Duration/ {printf("%d:%d:%g", $2,$3,$4)}'
+`  
+fi
 
 name=`echo $name | awk -F '.' '{print $1}'`
 
@@ -32,31 +27,31 @@ then echo $name,$type,$size,$rights,$date,$duration
 fi
 
 if [ `echo $rights` = "drwxr-xr-x" ]
-then 	cd $name/
-	#echo 1 #trace
+then 	
+	cd $name/
 	func
-	#echo 2 #trace
-	#cd -
-	#echo 3 #trace
-
+	cd -
+	
 fi
 
 done
 }
 
 #______________________________________________________
-#if [ -z `dpkg -l | grep ffmpeg` ]
-#then sudo apt install ffmpeg
-#fi
+if [ -z `dpkg -l | grep ffmpeg` ]
+then sudo apt install ffmpeg
+fi
+
 output=file_result.csv
 rm $output
 
 echo name,type,size,rights,date,duration >> $output
 
-func >> $output
+func | sed '/home/d'  >> $output
 
 echo "done"
 
-#cat file_result.csv
+cat file_result.csv
+
 
 
