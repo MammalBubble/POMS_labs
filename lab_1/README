@@ -3,6 +3,6 @@
 Скрипт находит файлы и во вложенных папках и выдает длительность медиафайлов
 Проверка скрипта file_check проводилась на на файлах в корневой папке и папке files
 Пример работы показан на картинке ниже 
-![Image alt](https://https://github.com/MammalBubble/POMS_labs/edit/master/lab_1/pic_exmpl.png)
+![Работа скртипта](https://https://github.com/MammalBubble/POMS_labs/edit/master/lab_1/pic_exmpl.png)
 
 У скрипта есть уязвимость - из-за парсинга команды ls -l пробелами не полуачется полностью читать имена файлов с пробелами.
