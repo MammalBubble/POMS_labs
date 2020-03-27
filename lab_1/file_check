@@ -14,16 +14,14 @@ date=`echo $line | awk '{print $7 $6 $8}'`
 name=`echo $line | awk '{print $9}'`
 type=`echo $name | awk -F '.' '{print $2}'`
 
-if [ "`expr index "$type" mp`" =  0 ]
-then 
-duration=`ffprobe videoplayback.mp4 2>&1 | awk -F'[:,]' '/Duration/ {printf("%d:%d:%g", $2,$3,$4)}'
-`  
-fi
+duration=`ffprobe "$name" 2>&1 | awk -F '[:,]' '/Duration/ {printf("%d:%d:%g", $2,$3,$4)}'`
 
 name=`echo $name | awk -F '.' '{print $1}'`
 
-if [ `echo $line | awk '{print $3}'` != "" ]
-then echo $name,$type,$size,$rights,$date,$duration 
+
+if [[ "$size" -ne "" ]]
+then echo $name,$type,$size,$rights,$date,$duration
+	duration="" 
 fi
 
 if [ `echo $rights` = "drwxr-xr-x" ]
@@ -31,7 +29,6 @@ then
 	cd $name/
 	func
 	cd -
-	
 fi
 
 done
@@ -47,11 +44,10 @@ rm $output
 
 echo name,type,size,rights,date,duration >> $output
 
-func | sed '/home/d'  >> $output
+func | sed '/home/d' | sed '/*,*/d'  >> $output
 
 echo "done"
 
-cat file_result.csv
 
 
 
