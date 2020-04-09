@@ -1,24 +1,43 @@
 #!/bin/bash
-function instl (){
-
+function integrate () {
 if [[ -z `dpkg -l | grep "Robot OS"` ]]
 then echo "You need install ROS"
 echo ""
 ./rbnmcs_instl
 fi
 
-#mkdir -p ws/src && cd ws/src
-#git clone https://github.com/airalab/robonomics_comm
-#catkin_init_workspace && cd .. && catkin_make 
-wget http://bootstrap.aira.life/robonomics.sh
-chmod +x ./robonomics.sh
-./robonomics.sh init        # for the first time only
-./robonomics.sh mainnet     # or sidechain for Sidechain network
-rm robonomics.sh
+
+source /opt/ros/melodic/setup.bash
+
+cargo build --release --features ros --bin robonomics
+
 }
 
 
-function instl_with_ros (){
+function instl_rob (){
+echo "First we need to install Rust"
+curl https://sh.rustup.rs -sSf | sh
+
+source $HOME/.cargo/env
+
+rustup update nightly
+rustup target add wasm32-unknown-unknown --toolchain nightly
+rustup update stable
+cargo +nightly install --git https://github.com/alexcrichton/wasm-gc
+
+sudo apt install cmake git clang libclang-dev
+
+cargo install --force --git https://github.com/airalab/robonomics --tag v0.16 -p node-cli
+}
+
+
+function instl_ros (){
+
+sudo add-apt-repository restricted
+sudo add-apt-repository universe
+sudo add-apt-repository multiverse
+
+sudo apt-get update
 
 sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
 sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
@@ -31,26 +50,25 @@ sudo apt install python-rosdep python-rosinstall python-rosinstall-generator pyt
 
 sudo apt install python-rosdep
 
+sudo apt --fix-broken install
+
 sudo rosdep init
 rosdep update
 
-instl
 }
 
 
-echo "This script installs Robonomics by Airtable"
+echo "This script installs Robonomics by Airtable and integrates it in ROS"
 
-if [[ -n `dpkg -l | grep robonomics` ]]
-then echo "You have already installed Robonomics"
-return 0
-fi
-
-
-echo "1 is installation Robonomics and  ROS"
+echo "1 is installation Robonomics and  ROS with integration"
 echo "2 is installation Robonomics only"
+echo "3 is installation ROS only"
+echo "4 integrate Robonomics in ROS"
 read -p "What type do you need? " answer
 
 case $answer in
-1) instl_with_ros;;
-2) instl;;
+1) instl_ros;instl_rob;integrate;;
+2) instl_rob;;
+3) instl_ros;;
+4) integrate;;
 esac
