@@ -7,9 +7,13 @@ echo ""
 ./rbnmcs_instl
 fi
 
+cd $HOME/robonomics/
+
+source $HOME/.cargo/env
+
 source /opt/ros/melodic/setup.bash
 
-cargo build --release --features ros --bin robonomics
+cargo build --release --bin robonomics
 
 }
 
@@ -29,7 +33,7 @@ cargo +nightly install --git https://github.com/alexcrichton/wasm-gc
 
 sudo apt install cmake git clang libclang-dev
 
-cargo install --force --git https://github.com/airalab/robonomics --tag v0.16 node-cli
+cargo install --force --git https://github.com/airalab/robonomics node-cli 
 }
 
 
