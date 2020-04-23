@@ -1,4 +1,6 @@
 Пытаюсь написать скрипт, который по циферке рисовал бы введенный код.
 
 Проблемы:
-* не получается пока вызвать сервис из кода с помощью [rospy.ServiceProxy](http://docs.ros.org/melodic/api/rospy/html/rospy.impl.tcpros_service.ServiceProxy-class.html)
+* не получается пока вызвать сервис из кода с помощью [rospy.ServiceProxy](http://docs.ros.org/melodic/api/rospy/html/rospy.impl.tcpros_service.ServiceProxy-class.html), для этого нужно узнать класс сервиса, а где узнать - неизвестно
+* не получается никак отладить программу и откалибровать движение, все работает только один раз
+ну то есть запускается roscore, turtlesim_node, затем код. после первого выхода, код перестает отправлять сообщения черепахе 
