@@ -13,7 +13,7 @@ rospy.init_node('velocity_publisher', anonymous = False)
 vel_msg = Twist()
 
 def f(distance):
-	print('going on ', distance)
+	print('going on '+ str(distance))
 	if(distance>0):
 		vel_msg.linear.x = abs(speed)
 	else:
@@ -44,7 +44,7 @@ def f(distance):
 	return 0
 
 def r(angle):
-	print('rotating on ', angle)
+	print('rotating on '+ str(angle))
    #Converting from angles to radians
 	angular_speed = speed*2*PI/360
 	relative_angle = angle*2*PI/360
@@ -81,13 +81,19 @@ def zero():
 	r(-90);f(2);r(-90);f(1);r(-90);f(2);r(-90);r(-90);f(1)
 	return 0
 
+def one():
+	r(90)
+
+def two():
+	f(2)
+
 
 def draw_number(i):
 	print('starting draw numbers...')
 	switcher={
-		0: zero()
-#		1: one,
-#		2: two,
+		0: zero(),
+		1: one(),
+		2: two()
 #		3: three,
 #		4: four,
 #		5: five,
@@ -102,7 +108,6 @@ def draw_number(i):
 def velocity_publisher_f(string):
 
 	while not rospy.is_shutdown():
-#		number=''
 		for number in string:
 			number=int(number)
 			draw_number(number)
