@@ -2,15 +2,15 @@
 import rospy
 from geometry_msgs.msg import Twist
 from turtlesim.srv import SetPen
-speed=10
+speed=2
 PI = 3.1415926535897
 
 #strting a new node for publisher
-velocity_publisher = rospy.Publisher('/turtle1/cmd_vel', Twist, queue_size=10)
+velocity_publisher = rospy.Publisher("turtle1/cmd_vel", Twist, queue_size=10)
 rospy.init_node('velocity_publisher', anonymous = False)
 
-rospy.wait_for_service('/turtle1/set_pen')
-setpen = rospy.ServiceProxy("/turtle1/set_pen", SetPen)
+rospy.wait_for_service("turtle1/set_pen")
+setpen = rospy.ServiceProxy("turtle1/set_pen", SetPen)
 #res = setpen(255, 255, 255, 4, switch)
 vel_msg = Twist()
 
@@ -93,42 +93,42 @@ def zero():
 	print('drawing zero...')
 	r(-90); f(2); r(90); f(1)
 	r(90); f(2); r(90); f(1)
-	r(180);	pu; f(1.2); pd
+	r(180);	pu(); f(1.2); pd()
 	return
 
 def one():
 	print('drawing one...')
-	pu; f(1); r(-90); pd
-	f(2); pu; r(90); f(0.2)
-	r(90); f(2); r(-90); pd
+	pu(); f(1); r(-90); pd()
+	f(2); pu(); r(90); f(0.2)
+	r(90); f(2); r(-90); pd()
 	return
 
 def two():
 	print('drawing two...')
 	r(-90); f(1); r(90); f(1)
 	r(-90); f(1); r(-90); f(1)
-	r(-90); pu; f(2); r(-90)
-	pd; f(1); pu; f(0.2); pd
+	r(-90); pu(); f(2); r(-90)
+	pd(); f(1); pu(); f(0.2); pd()
 	return
 
 
 def three():
 	print('drawing three...')	
 	for i in range(3):
-		f(1); pu; r(180); f(1)
-		r(90); f(1); r(90); pd
-	pu; f(1); r(90); f(1)
-	pd; f(2); r(-90); pu
-	f(0.2); pd 
+		f(1); pu(); r(180); f(1)
+		r(90); f(1); r(90); pd()
+	pu(); f(1); r(90); f(1)
+	pd(); f(2); r(-90); pu()
+	f(0.2); pd()
 	return
 
 
 def four():
 	print('drawing four...')
-	pu; r(-90); f(2); r(180)
-	pd; f(1); r(-90); f(1)
+	pu(); r(-90); f(2); r(180)
+	pd(); f(1); r(-90); f(1)
 	r(-90); f(1); r(180); f(2)
-	pu; r(-90); f(0.2); pd
+	pu(); r(-90); f(0.2); pd()
 	return
 
 
@@ -136,8 +136,8 @@ def five():
 	print('drawing five...')
 	f(1); r(-90); f(1); r(-90)
 	f(1); r(90); f(1); r(90)
-	f(1); pu; r(90); f(2)
-	r(-90); f(0.2); pd
+	f(1); pu(); r(90); f(2)
+	r(-90); f(0.2); pd()
 	return
 
 
@@ -146,16 +146,16 @@ def six():
 	f(1); r(-90); f(1); r(-90)
 	f(1); r(90); f(1); r(90)
 	f(1); r(180); f(1); r(-90)
-	f(2); pu; r(-90); f(1.2);
-	pd
+	f(2); pu(); r(-90); f(1.2);
+	pd()
 	return
 
 
 def seven():
 	print('drawing seven...')	
-	pu; r(-90); f(2); r(90)
-	pd; f(1); r(90); f(2);
-	pu; r(-90); f(0.2); pd
+	pu(); r(-90); f(2); r(90)
+	pd(); f(1); r(90); f(2);
+	pu(); r(-90); f(0.2); pd()
 	return
 
 
@@ -165,16 +165,16 @@ def eight():
 		f(1); r(-90); f(1); r(-90);
 		f(1); r(-90); f(1); r(180);
 		f(1); r(90)
-	pu; f(1.2); r(90); f(2)
-	r(-90); pd
+	pu(); f(1.2); r(90); f(2)
+	r(-90); pd()
 	return
 
 def nine():
 	print('drawing nine...')
 	f(1); r(-90); f(2); r(-90)
 	f(1); r(-90); f(1); r(-90)
-	f(1); pu; f(0.2); r(90)
-	f(1); r(-90); pd
+	f(1); pu(); f(0.2); r(90)
+	f(1); r(-90); pd()
 	return
 
 def draw_number(i):
