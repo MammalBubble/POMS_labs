@@ -1,7 +1,8 @@
-Пытаюсь написать скрипт, который по циферке рисовал бы введенный код.
+Французов Роман
 
-* Циферки ЕСТЕСТВЕННО все кривые
-![yumi-yumi](https://github.com/MammalBubble/POMS_labs/blob/master/lab_3/9.8opnoe.png)
-* сервис set_pen не вызывается из питончика, в чем проблема конечно же не понятно, ошибок не выкидывает
+номер в ИСУ 244718
 
-Вывод: вау все работает :shit: :shit: :shit:
+* Проблемы с кривыми цифрами решаются установкой низкой скорости черепашки
+![test](https://github.com/MammalBubble/POMS_labs/blob/master/lab_3/all numbers test.png)
+* сервис set_pen  не вызывался из-за кривого вызова функкции
+![result](https://github.com/MammalBubble/POMS_labs/blob/master/lab_3/the code.png)
