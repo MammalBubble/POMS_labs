@@ -1,0 +1,29 @@
+<launch>
+
+	<master auto="start"/>
+ 	<param name="use_sim_time" value="true"/>
+
+		<!-- Run the stage  --> 
+	<node name="stageros" type="stageros" pkg="stage_ros" output="screen" args="$(find era_nav)/src/floorplan.world" />
+
+		<!-- Run the map server --> 
+	<node name="map_server" pkg="map_server" type="map_server" args="$(find era_nav)/src/floorplan.pgm 0.05"/>
+
+		<!--- Run gmapping  -->
+	<node name="slam_gmapping" type="slam_gmapping" pkg="gmapping" output="screen" args="scan:=base_scan">
+	</node>   
+	
+	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find era_nav)/config/config.rviz"/>
+
+		<!--- Run AMCL --> 
+	<include file="$(find era_nav)/launch/amcl_diff.launch" />
+
+  	<node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+	<rosparam file="$(find era_nav)/config/costmap_common_params.yaml" command="load" ns="global_costmap" /> 
+	<rosparam file="$(find era_nav)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
+	<rosparam file="$(find era_nav)/config/local_costmap_params.yaml" command="load" />
+	<rosparam file="$(find era_nav)/config/global_costmap_params.yaml" command="load" /> 
+	<rosparam file="$(find era_nav)/config/base_local_planner_params.yaml" command="load" />
+ </node>
+
+</launch> 
