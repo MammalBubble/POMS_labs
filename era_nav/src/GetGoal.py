@@ -19,7 +19,7 @@ class GetGoal:
     pose_stamped.pose.pose.orientation.z=0
 
     map=OccupancyGrid()
-    map_array=[[i for i in range(4000)],[i for i in range(4000)]]
+    map_array=[[i for i in range(4000)],[j for j in range(4000)]]
     #map_array=[[],[]]
 	
     Goal_is_Obtained = False
@@ -34,8 +34,8 @@ class GetGoal:
         self.goal_publisher = rospy.Publisher('/move_base/goal', MoveBaseActionGoal, queue_size=10)
 
         # A subscriber to the topics 'cmd_vel'.
-	self.velocity_subscriber=rospy.Subscriber("/cmd_vel",Twist, self.timer_callback) # When receiving a message, call timer_callback()
-
+	#self.velocity_subscriber=rospy.Subscriber("/cmd_vel",Twist, self.timer_callback) # When receiving a message, call timer_callback()
+	self.velocity_subscriber=rospy.Subscriber("/cmd_vel",Twist)
  
 	# A subscriber to the topics '/amcl_Pose'
         self.pose_subscriber = rospy.Subscriber('/amcl_pose', PoseWithCovarianceStamped, self.update_pose)
@@ -53,7 +53,7 @@ class GetGoal:
 	return
 
     def update_pose(self, msg):
-        
+	print("Map message recieved")
 	self.pose_stamped=msg
 	#self.pose_stamped.pose.pose.position.x
 	#self.pose_stamped.pose.pose.position.y
@@ -65,14 +65,15 @@ class GetGoal:
 	if not self.map.data: print("Map data is empty"); return
 	if self.map.info.width == 640: return
 	w=self.map.info.width
-	h=self.map.info.height
+	h=self.map.info.heights
 	for i in range(h):
 		for j in range(w):
-			self.map_array[i][j]=self.map.data[i*w+j]
-	#print(self.map.info.resolution)
-	#print(self.map.info.width)
-	#print(self.map.info.height)
+			try:
+				self.map_array[i][j]=self.map.data[i*w+j-1]
+			except IndexError:
+				#print (i,j,self.map_array[i][j],self.map.data[i*w+j-1]) adress to self.map_array cause IndexError(out of range)
 
+	self.PublishGoal
 
     def PublishGoal(self):
 	x=self.pose_stamped.pose.pose.position.x
@@ -81,16 +82,6 @@ class GetGoal:
 	#res=self.map.info.resolution
 	res=0.05	
 
-	#w=self.map.info.width
-	#h=self.map.info.height
-
-	#self.map_array=[[0 for j in range(w)] for i in range(h)]
-	#self.map_array=self.map.data
-	#for i in range (0, h):
-	#	for j in range (0, w):
-	#		self.map_array[i][j]=self.map.data[i*w+j]
-	#print(self.map_array)
-
 	i=3
 	sum=0
 	self.Goal_is_Obtained = True
@@ -98,22 +89,25 @@ class GetGoal:
 	yc=int(y/res)-1
 	#map analysys
 	while self.Goal_is_Obtained: #checks 8 sqrs around current position
-		if self.check_sqr(xc+i, yc) < sum: sum=self.check_sqr(xc+i , yc); xg=xc+i; yg=yc;
-		if self.check_sqr(xc-i, yc) < sum: sum=self.check_sqr(xc-i , yc); xg=xc-i; yg=yc;
-		if self.check_sqr(xc, yc+i) < sum: sum=self.check_sqr(xc , yc+i); xg=xc; yg=yc+i;
-		if self.check_sqr(xc, yc-i) < sum: sum=self.check_sqr(xc+i , yc-i); xg=xc; yg=yc-i;
-		if self.check_sqr(xc+i, yc+i) < sum: sum=self.check_sqr(xc+i , yc+i); xg=xc+i; yg=yc+i;
-		if self.check_sqr(xc+i, yc-i) < sum: sum=self.check_sqr(xc+i , yc-i); xg=xc+i; yg=yc-i;
-		if self.check_sqr(xc-i , yc+i) < sum: sum=self.check_sqr(xc-i , yc+i); xg=xc-i; yg=yc+i;
-		if self.check_sqr(xc-i , yc-i) < sum: sum=self.check_sqr(xc-i , yc-i); xg=xc-i; yg=yc-i;
-		if sum < 0: self.Goal_is_Obtained = False 
-		else: i=i+1
+		try:
+			if self.check_sqr(xc+i, yc) < sum: sum=self.check_sqr(xc+i , yc); xg=xc+i; yg=yc;
+			if self.check_sqr(xc-i, yc) < sum: sum=self.check_sqr(xc-i , yc); xg=xc-i; yg=yc;
+			if self.check_sqr(xc, yc+i) < sum: sum=self.check_sqr(xc , yc+i); xg=xc; yg=yc+i;
+			if self.check_sqr(xc, yc-i) < sum: sum=self.check_sqr(xc+i , yc-i); xg=xc; yg=yc-i;
+			if self.check_sqr(xc+i, yc+i) < sum: sum=self.check_sqr(xc+i , yc+i); xg=xc+i; yg=yc+i;
+			if self.check_sqr(xc+i, yc-i) < sum: sum=self.check_sqr(xc+i , yc-i); xg=xc+i; yg=yc-i;
+			if self.check_sqr(xc-i , yc+i) < sum: sum=self.check_sqr(xc-i , yc+i); xg=xc-i; yg=yc+i;
+			if self.check_sqr(xc-i , yc-i) < sum: sum=self.check_sqr(xc-i , yc-i); xg=xc-i; yg=yc-i;
+			if sum < 0: self.Goal_is_Obtained = False 
+			else: i=i+1
+		except IndexError:
+			pass
 	#publishing goal
 	print("Publishing goal")
 	pose_msg=MoveBaseActionGoal
 	pose_msg.goal.pose.position.x = xg*res
 	pose_msg.goal.pose.position.y = yg*res
-	print(xg*res, yg*res)
+	#print(xg*res, yg*res)
 	self.goal_publisher.pubish(pose_msg)
 	return
 
@@ -128,4 +122,4 @@ if __name__ == '__main__':
 	x = GetGoal()
 	x.PublishGoal()
     except rospy.ROSInterruptException:
-        pass
+	pass
